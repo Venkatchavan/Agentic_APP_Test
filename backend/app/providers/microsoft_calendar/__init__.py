@@ -1,0 +1,1 @@
+"""Microsoft Calendar provider package."""

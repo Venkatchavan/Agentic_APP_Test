@@ -1,0 +1,83 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.pyo
+.mypy_cache/
+.dmypy.json
+.pyre/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── Environment & Secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# ── Database ──────────────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Flutter / Dart ────────────────────────────────────────────────────────────
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/key.properties
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/flutter_export_environment.sh
+mobile/ios/Runner.xcworkspace/xcuserdata/
+mobile/*.iml
+mobile/web/
+
+# ── Node / JS (if ever added) ─────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── VS Code ───────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+!.vscode/extensions.json.example
+
+# ── macOS / Windows ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Alembic generated ─────────────────────────────────────────────────────────
+backend/alembic/versions/*.pyc
+
+# ── Test artifacts ────────────────────────────────────────────────────────────
+test_agentic.db
+.pytest_cache/
+coverage.xml

@@ -1,0 +1,69 @@
+name: agentic_app
+description: Agentic Productivity App — multi-platform mobile client.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Navigation
+  go_router: ^14.2.0
+
+  # Networking
+  dio: ^5.4.3
+  retrofit: ^4.1.0
+
+  # Local storage
+  flutter_secure_storage: ^9.0.0
+  shared_preferences: ^2.2.3
+
+  # UI helpers
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10
+  shimmer: ^3.0.0
+  intl: ^0.19.0
+
+  # JSON
+  json_annotation: ^4.9.0
+  freezed_annotation: ^2.4.1
+
+  # Utilities
+  logger: ^2.3.0
+  url_launcher: ^6.2.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.9
+  json_serializable: ^6.8.0
+  freezed: ^2.5.2
+  retrofit_generator: ^8.1.0
+  riverpod_generator: ^2.4.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700

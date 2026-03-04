@@ -1,0 +1,37 @@
+project: agentic-inbox-meeting-app
+prompt_pack_version: 1.0.0
+last_updated: 2026-03-04
+owner: Venkat Chavan N
+primary_target:
+  - ios
+  - android
+  - tablets
+product_modes:
+  - inbox_to_action
+  - meeting_followup
+required_prompts:
+  - 00_master_orchestrator.md
+  - 02_mobile_platform_rules.md
+  - 03_security_privacy_and_compliance.md
+  - 04_agentic_runtime_rules.md
+  - 10_documentation_update_rules.md
+  - 11_release_and_version_control_rules.md
+optional_prompts:
+  - 12_team_mode_and_admin_rules.md
+  - 13_observability_and_cost_controls.md
+execution_order:
+  - 00_master_orchestrator.md
+  - 01_product_scope_and_prd.md
+  - 02_mobile_platform_rules.md
+  - 03_security_privacy_and_compliance.md
+  - 04_agentic_runtime_rules.md
+  - 05_integrations_and_tool_policies.md
+  - 06_backend_architecture.md
+  - 07_data_models_and_contracts.md
+  - 08_ui_ux_rules.md
+  - 09_evaluation_and_test_harness.md
+  - 10_documentation_update_rules.md
+  - 11_release_and_version_control_rules.md
+  - 12_team_mode_and_admin_rules.md
+  - 13_observability_and_cost_controls.md
+  - 14_phase_execution_template.md

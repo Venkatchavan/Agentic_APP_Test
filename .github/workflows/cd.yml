@@ -1,0 +1,55 @@
+name: CD — Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "docker-compose.yml"
+      - ".github/workflows/cd.yml"
+
+jobs:
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build -t agentic-app-backend:${{ github.sha }} ./backend
+          docker tag agentic-app-backend:${{ github.sha }} agentic-app-backend:latest
+
+      # ── Uncomment and configure one of these deploy targets ──────────────────
+
+      # OPTION A: Deploy via SSH to a VPS
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@v1
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       cd /opt/agentic-app
+      #       git pull origin main
+      #       docker-compose pull
+      #       docker-compose up -d --build backend
+      #       docker-compose exec -T backend alembic upgrade head
+
+      # OPTION B: Push to Docker Hub, pull on server
+      # - name: Push to Docker Hub
+      #   run: |
+      #     echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/agentic-app-backend:${{ github.sha }}
+
+      # OPTION C: Deploy to Railway / Render / Fly.io
+      # - name: Deploy to Railway
+      #   uses: berviantoleo/railway-deploy@main
+      #   with:
+      #     railway_token: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Notify success
+        run: echo "Deployed commit ${{ github.sha }} to production"

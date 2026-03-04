@@ -1,0 +1,15 @@
+# Minimal requirements for local testing (SQLite, no Redis/Celery/AI/S3)
+fastapi>=0.109.0,<1.0.0
+uvicorn[standard]>=0.27.0,<1.0.0
+sqlalchemy>=2.0.0,<3.0.0
+aiosqlite>=0.20.0,<1.0.0
+alembic>=1.13.0,<2.0.0
+pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0,<3.0.0
+python-jose[cryptography]>=3.3.0,<4.0.0
+passlib[bcrypt]>=1.7.0,<2.0.0
+httpx>=0.26.0,<1.0.0
+beautifulsoup4>=4.12.0,<5.0.0
+bleach>=6.1.0,<7.0.0
+python-multipart>=0.0.6
+structlog>=24.1.0,<25.0.0

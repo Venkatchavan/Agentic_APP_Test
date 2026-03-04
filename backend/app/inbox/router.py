@@ -3,6 +3,7 @@ Inbox REST endpoints.
 """
 
 from fastapi import APIRouter, HTTPException
+import httpx
 
 from app.inbox import schemas, service
 from app.inbox.extraction import extract_actions_from_email
@@ -46,6 +47,10 @@ async def extract_actions(email_id: str, user_id: CurrentUser, db: DbSession):
         return saved
     except AppError as e:
         raise HTTPException(status_code=e.status_code, detail={"code": e.code, "message": e.message})
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 429:
+            raise HTTPException(status_code=503, detail={"code": "AI_RATE_LIMITED", "message": "AI provider rate limit reached. Please retry in a few seconds."})
+        raise HTTPException(status_code=502, detail={"code": "AI_ERROR", "message": str(e)})
 
 
 @router.post("/ingest", response_model=list[schemas.IngestedEmailResponse])

@@ -48,11 +48,11 @@ async def extract_actions_from_email(
     prompt = EXTRACTION_PROMPT.format(subject=subject, sender=sender, body=body)
 
     raw_output = await ai_extract(
-        prompt=prompt,
-        system="You are a precise email action extractor. Output valid JSON only.",
-        task_type="email_extraction",
+        system_prompt="You are a precise email action extractor. Output valid JSON only.",
+        user_content=prompt,
     )
 
+    # ai_extract returns already-parsed JSON (dict or list)
     actions = _parse_and_validate(raw_output, email_id, user_id)
     logger.info(
         "inbox.extraction_complete",
@@ -63,16 +63,25 @@ async def extract_actions_from_email(
 
 
 def _parse_and_validate(
-    raw: str, email_id: str, user_id: str
+    raw, email_id: str, user_id: str
 ) -> list[ExtractedEmailAction]:
     """Deterministic validation layer — never trust raw model output."""
-    try:
-        items = json.loads(raw)
-        if not isinstance(items, list):
-            items = [items]
-    except json.JSONDecodeError:
-        logger.warning("inbox.extraction_parse_failed", raw_preview=raw[:200])
+    # raw may be already-parsed (list/dict) or a string
+    if isinstance(raw, str):
+        try:
+            items = json.loads(raw)
+        except json.JSONDecodeError:
+            logger.warning("inbox.extraction_parse_failed", raw_preview=raw[:200])
+            return []
+    elif isinstance(raw, list):
+        items = raw
+    elif isinstance(raw, dict):
+        items = [raw]
+    else:
         return []
+
+    if not isinstance(items, list):
+        items = [items]
 
     results = []
     for item in items:

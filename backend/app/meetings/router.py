@@ -3,6 +3,7 @@ Meetings REST endpoints.
 """
 
 import json
+import httpx
 from fastapi import APIRouter, HTTPException
 
 from app.meetings import schemas, service
@@ -71,3 +72,7 @@ async def process_meeting(transcript_id: str, user_id: CurrentUser, db: DbSessio
         return summary
     except AppError as e:
         raise HTTPException(status_code=e.status_code, detail={"code": e.code, "message": e.message})
+    except httpx.HTTPStatusError as e:
+        if e.response.status_code == 429:
+            raise HTTPException(status_code=503, detail={"code": "AI_RATE_LIMITED", "message": "AI provider rate limit reached. Please retry in a few seconds."})
+        raise HTTPException(status_code=502, detail={"code": "AI_ERROR", "message": str(e)})

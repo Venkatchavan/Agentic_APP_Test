@@ -6,6 +6,7 @@ All callers use `ai_extract()` or `ai_generate()` only.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import structlog
 import httpx
@@ -227,9 +228,22 @@ async def _call_gemini(
         },
     }
 
+    _retries = 3
+    _delay = 5.0  # seconds, doubles on each retry
     async with httpx.AsyncClient(timeout=60) as client:
-        resp = await client.post(url, json=payload)
-        resp.raise_for_status()
+        for attempt in range(_retries):
+            resp = await client.post(url, json=payload)
+            if resp.status_code == 429 and attempt < _retries - 1:
+                wait = _delay * (2 ** attempt)
+                logger.warning(
+                    "ai.gemini_rate_limited",
+                    attempt=attempt + 1,
+                    retry_after_s=wait,
+                )
+                await asyncio.sleep(wait)
+                continue
+            resp.raise_for_status()
+            break
         data = resp.json()
 
     return data["candidates"][0]["content"]["parts"][0]["text"]

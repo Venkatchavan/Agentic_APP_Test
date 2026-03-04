@@ -53,23 +53,19 @@ async def extract_meeting_content(
     )
 
     raw = await ai_extract(
-        prompt=prompt,
-        system="You are a precise meeting analyst. Output valid JSON only.",
-        task_type="meeting_extraction",
+        system_prompt="You are a precise meeting analyst. Output valid JSON only.",
+        user_content=prompt,
     )
 
-    return _parse_meeting_output(raw, transcript_id, user_id)
+    # ai_extract already returns a parsed dict
+    data = raw if isinstance(raw, dict) else {}
+    return _parse_meeting_output(data, transcript_id, user_id)
 
 
 def _parse_meeting_output(
-    raw: str, transcript_id: str, user_id: str
+    data: dict, transcript_id: str, user_id: str
 ) -> tuple[MeetingSummary, list[MeetingDecision], list[MeetingActionItem]]:
     """Deterministic validation of AI output."""
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        logger.warning("meetings.parse_failed", raw_preview=raw[:200])
-        data = {}
 
     summary = MeetingSummary(
         transcript_id=transcript_id,

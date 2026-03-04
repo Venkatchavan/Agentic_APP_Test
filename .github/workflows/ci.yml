@@ -31,12 +31,14 @@ jobs:
       - name: Create test .env
         run: |
           cd backend
-          cat > .env << 'EOF'
+          # Generate a random secret at runtime — never hardcode secrets in source
+          RANDOM_SECRET=$(python -c "import secrets; print(secrets.token_hex(32))")
+          cat > .env << EOF
           DATABASE_URL=sqlite+aiosqlite:///./test_ci.db
           DEBUG=true
-          JWT_SECRET_KEY=ci-test-secret-key-not-for-production
+          JWT_SECRET_KEY=${RANDOM_SECRET}
           AI_PROVIDER=openai
-          AI_OPENAI_API_KEY=sk-test-placeholder
+          AI_OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY || 'sk-placeholder-for-ci' }}
           EOF
 
       - name: Run backend tests

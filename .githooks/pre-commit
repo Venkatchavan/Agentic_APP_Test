@@ -1,0 +1,35 @@
+#!/bin/sh
+# Pre-commit hook: blocks commits containing real API keys or secrets
+# Install: copy to .git/hooks/pre-commit and chmod +x
+
+RED='\033[0;31m'
+NC='\033[0m'
+
+# Patterns that indicate a real secret (not a placeholder)
+PATTERNS="
+AIza[0-9A-Za-z_-]{35}
+sk-[a-zA-Z0-9]{20,}
+AKIA[0-9A-Z]{16}
+[a-z0-9]{32}-us[0-9]
+ghp_[a-zA-Z0-9]{36}
+"
+
+STAGED=$(git diff --cached --name-only)
+
+for file in $STAGED; do
+  # Skip example/template files
+  case "$file" in
+    *.example|*.template|*.sample) continue ;;
+    *test*|*mock*|*fixture*) continue ;;
+  esac
+
+  for pattern in $PATTERNS; do
+    if git diff --cached "$file" 2>/dev/null | grep "^+" | grep -qE "$pattern"; then
+      printf "${RED}BLOCKED: Possible secret detected in $file (pattern: $pattern)${NC}\n"
+      printf "If this is a false positive, use: git commit --no-verify\n"
+      exit 1
+    fi
+  done
+done
+
+exit 0

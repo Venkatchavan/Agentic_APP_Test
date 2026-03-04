@@ -48,12 +48,14 @@ class Settings(BaseSettings):
     ms_calendar_scopes: str = "Calendars.ReadWrite"
 
     # ── AI Layer ─────────────────────────────────────────
-    ai_provider: str = "openai"  # "openai" | "anthropic"
+    ai_provider: str = "gemini"  # "openai" | "anthropic" | "gemini"
     ai_openai_api_key: str = ""
     ai_openai_model: str = "gpt-4o"
     ai_anthropic_api_key: str = ""
     ai_anthropic_model: str = "claude-sonnet-4-20250514"
-    ai_fallback_model: str = "gpt-4o-mini"
+    ai_gemini_api_key: str = ""
+    ai_gemini_model: str = "gemini-2.0-flash"
+    ai_fallback_model: str = "gemini-2.0-flash"
     ai_max_retries: int = 3
     ai_request_timeout: int = 60
     ai_budget_limit_usd: float = 500.0

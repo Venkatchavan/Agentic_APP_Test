@@ -1,6 +1,6 @@
 """
 Model-agnostic AI client.
-Supports OpenAI and Anthropic — chosen via settings.ai_provider.
+Supports OpenAI, Anthropic, and Google Gemini — chosen via settings.ai_provider.
 All callers use `ai_extract()` or `ai_generate()` only.
 """
 
@@ -115,6 +115,13 @@ async def _call_llm(
             max_tokens=max_tokens,
             temperature=temperature,
         )
+    elif provider == "gemini":
+        text = await _call_gemini(
+            system_prompt, user_content,
+            model=model or settings.ai_gemini_model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
     else:
         raise ValueError(f"Unknown AI provider: {provider}")
 
@@ -189,6 +196,43 @@ async def _call_anthropic(
         data = resp.json()
 
     return data["content"][0]["text"]
+
+
+# ---------------------------------------------------------------------------
+# Google Gemini
+# ---------------------------------------------------------------------------
+
+async def _call_gemini(
+    system_prompt: str,
+    user_content: str,
+    *,
+    model: str,
+    max_tokens: int,
+    temperature: float,
+) -> str:
+    url = (
+        f"https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{model}:generateContent?key={settings.ai_gemini_api_key}"
+    )
+    payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": f"{system_prompt}\n\n{user_content}"}],
+            }
+        ],
+        "generationConfig": {
+            "temperature": temperature,
+            "maxOutputTokens": max_tokens,
+        },
+    }
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        resp = await client.post(url, json=payload)
+        resp.raise_for_status()
+        data = resp.json()
+
+    return data["candidates"][0]["content"]["parts"][0]["text"]
 
 
 # ---------------------------------------------------------------------------
